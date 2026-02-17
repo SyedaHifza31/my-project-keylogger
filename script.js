@@ -234,3 +234,55 @@ searchInput.addEventListener("keyup", (e) => {
     time: Date.now()
   }));
 });
+// Theme toggle
+const themeToggle = document.getElementById('themeToggle');
+const body = document.body;
+
+if (localStorage.getItem('theme') === 'light') {
+  body.classList.add('light-mode');
+  themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+}
+
+themeToggle.addEventListener('click', () => {
+  body.classList.toggle('light-mode');
+  
+  if (body.classList.contains('light-mode')) {
+    localStorage.setItem('theme', 'light');
+    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+  } else {
+    localStorage.setItem('theme', 'dark');
+    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+  }
+});
+// Back to top
+const backToTop = document.getElementById('backToTop');
+
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 400) {
+    backToTop.classList.add('visible');
+  } else {
+    backToTop.classList.remove('visible');
+  }
+});
+
+backToTop.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+let charCount = 0;
+let startTimeWPM = null;
+let wpmDisplay = document.getElementById('typing-speed');
+
+document.addEventListener('keydown', (e) => {
+  if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) { // only letters/symbols
+    charCount++;
+    if (!startTimeWPM) startTimeWPM = performance.now();
+  }
+});
+
+document.addEventListener('keyup', () => {
+  if (charCount >= 5 && startTimeWPM) {
+    const elapsed = (performance.now() - startTimeWPM) / 1000 / 60; // minutes
+    const wpm = Math.round((charCount / 5) / elapsed);
+    wpmDisplay.innerHTML = `Typing Speed: ${isNaN(wpm) ? '—' : wpm} WPM`;
+  }
+});
